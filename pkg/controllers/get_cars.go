@@ -19,8 +19,6 @@ func GetAllCars() ([]models.Car, error) {
 	if err = cursor.All(context.TODO(), &results); err != nil {
 		panic(err)
 	}
-	for _, result := range results {
-		results = append(results, result)
-	}
+
 	return results, nil
 }
