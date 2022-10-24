@@ -4,10 +4,14 @@ import (
 	"net/http"
 	"os"
 
+	"bitbucket.org/8BitsKW/go-backend/pkg/database"
 	"bitbucket.org/8BitsKW/go-backend/pkg/routes"
 	"github.com/gorilla/mux"
 )
 
+func init() {
+	database.Setup()
+}
 func main() {
 	port := os.Getenv("PORT")
 
@@ -17,6 +21,7 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", routes.CarHandler).Methods("GET")
+	router.HandleFunc("/car", routes.AddCarHandler).Methods("POST")
 
 	http.ListenAndServe(":"+port, router)
 }
