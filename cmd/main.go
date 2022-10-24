@@ -23,6 +23,7 @@ func main() {
 	router.HandleFunc("/cars", routes.GetCarsHandler).Methods("GET")
 	router.HandleFunc("/cars", routes.AddCarHandler).Methods("POST")
 	router.HandleFunc("/cars/{registration}/rentals", routes.RentCarHandler).Methods("POST")
+	router.HandleFunc("/cars/{registration}/returns", routes.ReturnCarHandler).Methods("POST")
 
 	http.ListenAndServe(":"+port, router)
 }
