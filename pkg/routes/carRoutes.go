@@ -7,9 +7,10 @@ import (
 
 	"bitbucket.org/8BitsKW/go-backend/pkg/controllers"
 	"bitbucket.org/8BitsKW/go-backend/pkg/models"
+	"github.com/gorilla/mux"
 )
 
-func CarHandler(w http.ResponseWriter, r *http.Request) {
+func GetCarsHandler(w http.ResponseWriter, r *http.Request) {
 	results, err := controllers.GetAllCars()
 	if err != nil {
 		jsonResponse, jsonError := json.Marshal(models.ResponseObject{Message: err.Error()})
@@ -48,6 +49,28 @@ func AddCarHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write(jsonResponse)
 	} else {
 		jsonResponse, jsonError := json.Marshal(models.CreatedCar{Id: id})
+		if jsonError != nil {
+			fmt.Println("Unable to encode JSON")
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonResponse)
+	}
+}
+func RentCarHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	message, err := controllers.RentCar(vars["registration"])
+	if err != nil {
+		response := models.ResponseObject{Message: err.Error()}
+		jsonResponse, jsonError := json.Marshal(response)
+		if jsonError != nil {
+			fmt.Println("Unable to encode JSON")
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(jsonResponse)
+	} else {
+		jsonResponse, jsonError := json.Marshal(models.ResponseObject{Message: message})
 		if jsonError != nil {
 			fmt.Println("Unable to encode JSON")
 		}

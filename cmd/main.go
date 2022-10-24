@@ -20,8 +20,9 @@ func main() {
 	}
 
 	router := mux.NewRouter()
-	router.HandleFunc("/cars", routes.CarHandler).Methods("GET")
+	router.HandleFunc("/cars", routes.GetCarsHandler).Methods("GET")
 	router.HandleFunc("/cars", routes.AddCarHandler).Methods("POST")
+	router.HandleFunc("/cars/{registration}/rentals", routes.RentCarHandler).Methods("POST")
 
 	http.ListenAndServe(":"+port, router)
 }
