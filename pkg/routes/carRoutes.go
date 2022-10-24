@@ -19,30 +19,23 @@ func AddCarHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	err = controllers.CreateCar(&car)
-
-	response := models.ResponseObject{Message: err.Error()}
-
-	jsonResponse, jsonError := json.Marshal(response)
-
-	if jsonError != nil {
-		fmt.Println("Unable to encode JSON")
-	}
-
+	id, err := controllers.CreateCar(&car)
 	if err != nil {
+		response := models.ResponseObject{Message: err.Error()}
+		jsonResponse, jsonError := json.Marshal(response)
+		if jsonError != nil {
+			fmt.Println("Unable to encode JSON")
+		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(jsonResponse)
 	} else {
-		jsonResponse, jsonError = json.Marshal(models.ResponseObject{Message: "car created"})
-
+		jsonResponse, jsonError := json.Marshal(models.CreatedCar{Id: id})
 		if jsonError != nil {
 			fmt.Println("Unable to encode JSON")
 		}
-
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonResponse)
-		w.Write([]byte("car created successfully"))
 	}
 }
