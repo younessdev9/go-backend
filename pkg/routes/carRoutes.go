@@ -10,7 +10,24 @@ import (
 )
 
 func CarHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("should return cars list"))
+	results, err := controllers.GetAllCars()
+	if err != nil {
+		jsonResponse, jsonError := json.Marshal(models.ResponseObject{Message: err.Error()})
+		if jsonError != nil {
+			fmt.Println("Unable to encode JSON")
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(jsonResponse)
+	} else {
+		jsonResponse, jsonError := json.Marshal(results)
+		if jsonError != nil {
+			fmt.Println("Unable to encode JSON")
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonResponse)
+	}
 }
 func AddCarHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
